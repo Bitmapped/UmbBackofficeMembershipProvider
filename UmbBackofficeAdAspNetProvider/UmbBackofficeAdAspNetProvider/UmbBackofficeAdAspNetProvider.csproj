@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UmbBackofficeAdAspNetProvider</RootNamespace>
     <AssemblyName>UmbBackofficeAdAspNetProvider</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -18,6 +18,7 @@
     <SccProvider>SAK</SccProvider>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,6 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdAspNetProvider, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -162,7 +165,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Semver, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
+      <HintPath>..\packages\semver.1.1.2\lib\net45\Semver.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.5780.28254, Culture=neutral, processorArchitecture=MSIL">
@@ -294,10 +297,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\UmbracoAuthTokenServerExtensions.cs" />
     <Compile Include="App_Start\AdAspNetBackOfficeCustomOwinStartup.cs" />
-    <Compile Include="App_Start\UmbracoStandardOwinStartup.cs" />
     <Compile Include="AdAspNetBackOfficePasswordChecker.cs" />
+    <Compile Include="App_Start\UmbracoAuthTokenServerExtensions.cs" />
+    <Compile Include="App_Start\UmbracoStandardOwinStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -329,6 +332,7 @@
     <None Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <None Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Config\grid.editors.config.js" />
     <Content Include="Config\Lang\cs-CZ.user.xml" />
