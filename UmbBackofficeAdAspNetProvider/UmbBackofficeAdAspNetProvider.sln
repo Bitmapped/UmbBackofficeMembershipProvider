@@ -5,6 +5,11 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbBackofficeAdAspNetProvider", "UmbBackofficeAdAspNetProvider\UmbBackofficeAdAspNetProvider.csproj", "{12BA2053-E09D-4D5F-9C8A-DDBD3FC65D32}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{F31D5761-C5B2-4E76-BC86-CD248A5E86F4}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet\UmbBackOfficeAdAspNetProvider.1.0.0.nupkg = NuGet\UmbBackOfficeAdAspNetProvider.1.0.0.nupkg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
