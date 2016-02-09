@@ -4,12 +4,12 @@ using Umbraco.Core.Models.Identity;
 using Umbraco.Core.Security;
 using System.Web.Security;
 
-namespace UmbBackofficeAdAspNetProvider
+namespace UmbBackofficeMembershipProvider
 {
-    public class AdAspNetBackOfficePasswordChecker : IBackOfficeUserPasswordChecker
+    public class BackofficeMembershipProviderPasswordChecker : IBackOfficeUserPasswordChecker
     {
         /// <summary>
-        /// Determines if a username and password are valid using the AdAspNetProvider.
+        /// Determines if a username and password are valid using the BackofficeMembershipProvider.
         /// </summary>
         /// <param name="user">User to test.</param>
         /// <param name="password">Password to test.</param>
@@ -17,11 +17,11 @@ namespace UmbBackofficeAdAspNetProvider
         public Task<BackOfficeUserPasswordCheckerResult> CheckPasswordAsync(BackOfficeIdentityUser user, string password)
         {
             // Access provider.
-            if (Membership.Providers["AdAspNetBackOfficeProvider"] == null)
+            if (Membership.Providers["BackofficeMembershipProvider"] == null)
             {
-                throw new InvalidOperationException("Provider 'AdAspNetBackOfficeProvider' is not defined.");
+                throw new InvalidOperationException("Provider 'BackofficeMembershipProvider' is not defined.");
             }
-            var adProvider = Membership.Providers["AdAspNetBackOfficeProvider"];
+            var adProvider = Membership.Providers["BackofficeMembershipProvider"];
 
             // Check the user's password.
             var validUser = adProvider.ValidateUser(user.UserName, password) ? Task.FromResult(BackOfficeUserPasswordCheckerResult.ValidCredentials) : Task.FromResult(BackOfficeUserPasswordCheckerResult.InvalidCredentials);

@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/UmbBackofficeAdAspNetProvider/packages
+/UmbBackofficeAdAspNetProvider/UmbBackofficeAdAspNetProvider/bin
+/UmbBackofficeAdAspNetProvider/UmbBackofficeAdAspNetProvider/obj/Debug
+/UmbBackofficeAdAspNetProvider/.vs/UmbMembershipProvider/v14

@@ -3,25 +3,25 @@ using Owin;
 using Umbraco.Core;
 using Umbraco.Core.Security;
 using Umbraco.Web.Security.Identity;
-using UmbBackofficeAdAspNetProvider;
+using UmbBackofficeMembershipProvider;
 using Umbraco.Core.Models.Identity;
 
 //To use this startup class, change the appSetting value in the web.config called 
-// "owin:appStartup" to be "AdAspNetBackOfficeCustomOwinStartup"
+// "owin:appStartup" to be "BackofficeMembershipProviderCustomOwinStartup"
 
-[assembly: OwinStartup("AdAspNetBackOfficeCustomOwinStartup", typeof(AdAspNetBackOfficeCustomOwinStartup))]
+[assembly: OwinStartup("BackofficeMembershipProviderCustomOwinStartup", typeof(BackofficeMembershipProviderCustomOwinStartup))]
 
-namespace UmbBackofficeAdAspNetProvider
+namespace UmbBackofficeMembershipProvider
 {
     /// <summary>
     /// A custom way to configure OWIN for Umbraco
     /// </summary>
     /// <remarks>
-    /// The startup type is specified in appSettings under owin:appStartup - change it to "UmbracoCustomOwinStartup" to use this class
+    /// The startup type is specified in appSettings under owin:appStartup - change it to "BackofficeMembershipProviderCustomOwinStartup" to use this class
     /// 
     /// This startup class would allow you to customize the Identity IUserStore and/or IUserManager for the Umbraco Backoffice
     /// </remarks>
-    public class AdAspNetBackOfficeCustomOwinStartup
+    public class BackofficeMembershipProviderCustomOwinStartup
     {
         public void Configuration(IAppBuilder app)
         {
@@ -39,7 +39,7 @@ namespace UmbBackofficeAdAspNetProvider
                         membershipProvider);
 
                     // Call custom passowrd checker.
-                    userManager.BackOfficeUserPasswordChecker = new AdAspNetBackOfficePasswordChecker();
+                    userManager.BackOfficeUserPasswordChecker = new BackofficeMembershipProviderPasswordChecker();
 
                     return userManager;
                 });
