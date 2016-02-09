@@ -11,3 +11,5 @@
 /UmbMembershipProvider/packages
 /UmbMembershipProvider/UmbBackofficeMembershipProvider
 /UmbMembershipProvider/.vs/UmbBackofficeMembershipProvider/v14
+/src/packages
+/src/UmbBackofficeMembershipProvider/bin
