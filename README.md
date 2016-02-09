@@ -9,12 +9,13 @@ This project includes a DLL that will allow you to use a traditional `Membership
 2. Umbraco 7.3.1+
 
 # NuGet availability
-This project is available on [NuGet](https://www.nuget.org/packages/UmbMembershipProvider/).
+This project is available on [NuGet](https://www.nuget.org/packages/UmbBackofficeMembershipProvider/).
 
 ## Usage instructions
 ### Getting started
 1. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
-2. In **web.config**, make the following two modifications:
+2. Add the dependency [**UmbracoIdentityExtensions**](https://github.com/umbraco/UmbracoIdentityExtensions) as a reference in your project or place its DLL in the **\bin** folder.
+3. In **web.config**, make the following two modifications:
   - Add or modify the following line in the `<appSettings>` section:
 
     ```
