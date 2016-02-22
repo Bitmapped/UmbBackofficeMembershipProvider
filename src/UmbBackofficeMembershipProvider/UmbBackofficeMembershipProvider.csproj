@@ -304,8 +304,6 @@
   <ItemGroup>
     <Compile Include="App_Start\BackofficeMembershipProviderCustomOwinStartup.cs" />
     <Compile Include="BackofficeMembershipProviderPasswordChecker.cs" />
-    <Compile Include="App_Start\UmbracoAuthTokenServerExtensions.cs" />
-    <Compile Include="App_Start\UmbracoStandardOwinStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
