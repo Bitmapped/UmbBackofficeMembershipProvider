@@ -37,3 +37,6 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
       </providers>
      </membership>
  ```
+ 
+### User accounts
+In versions of Umbraco before 7.3.0, Umbraco automatically creates Umbraco user accounts for Active Directory users on first login. In versions 7.3.0 and newer, an administrator must create an Umbraco user account (use the same username) first before an Active Directory user can login.
