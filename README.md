@@ -21,8 +21,12 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
     ```
     <add key="owin:appStartup" value="BackofficeMembershipProviderCustomOwinStartup" />
     ```
+  - Add a LDAP connection string to your LDAP server in the `<connectionStrings>` section, like shown in the example code below. Specify a path to the domain root or a container/OU if you want to limit where the user accounts can be located.
   
-  - Add or modify a membership provider named `BackofficeMembershipProvider`, like shown in the example code below:
+    ```
+    <add connectionString="LDAP://mydomain.mycompany.com/DC=mydomain,DC=mycompany,DC=com" name="ADConnectionString" />
+    ```
+  - Add a membership provider named `BackofficeMembershipProvider`, like shown in the example code below. Be sure the `connectionStringName` matches the LDAP connection string you defined. `attributeMapUsername` specifies the username format - `sAMAccountName` for just the username, or `userPrincipalName` to use username@mydomain.mycompany.com. Be sure the usernames you configure in Umbraco use the same format.
   
     ```
     <membership defaultProvider="UmbracoMembershipProvider">
@@ -32,6 +36,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
            type="System.Web.Security.ActiveDirectoryMembershipProvider, System.Web, Version=2.0.0.0, 
                  Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
            connectionStringName="ADConnectionString"
+           attributeMapUsername="sAMAccountName"
            connectionUsername="testdomain\administrator" 
            connectionPassword="password"/>
       </providers>
