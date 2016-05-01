@@ -15,7 +15,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
 ### Getting started
 1. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
 2. Add the dependency [**UmbracoIdentityExtensions**](https://github.com/umbraco/UmbracoIdentityExtensions) as a reference in your project or place its DLL in the **\bin** folder.
-3. In **web.config**, make the following two modifications:
+3. In **web.config**, make the following modifications:
   - Add or modify the following line in the `<appSettings>` section:
 
     ```
@@ -28,6 +28,8 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
     ```
   - Add a membership provider named `BackofficeMembershipProvider`, like shown in the example code below. Be sure the `connectionStringName` matches the LDAP connection string you defined. `attributeMapUsername` specifies the username format - `sAMAccountName` for just the username, or `userPrincipalName` to use username@mydomain.mycompany.com. Be sure the usernames you configure in Umbraco use the same format.
   
+  - If you are upgrading from a pre-7.3.1 version of Umbraco that used an Active Directory provider for backoffice users, you must change `UsersMembershipProvider` to `Umbraco.Web.Security.Providers.UsersMembershipProvider`. If you have a new installation, this is the default provider already.  
+  
     ```
     <membership defaultProvider="UmbracoMembershipProvider">
       <providers>
@@ -39,9 +41,16 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
            attributeMapUsername="sAMAccountName"
            connectionUsername="testdomain\administrator" 
            connectionPassword="password"/>
+        <add
+          name="UsersMembershipProvider"
+          type="Umbraco.Web.Security.Providers.UsersMembershipProvider, Umbraco"
+          minRequiredNonalphanumericCharacters="0" minRequiredPasswordLength="8"
+          useLegacyEncoding="true" enablePasswordRetrieval="false"
+          enablePasswordReset="true" requiresQuestionAndAnswer="false"
+          passwordFormat="Hashed" />
       </providers>
      </membership>
  ```
- 
+
 ### User accounts
 In versions of Umbraco before 7.3.0, Umbraco automatically creates Umbraco user accounts for Active Directory users on first login. In versions 7.3.0 and newer, an administrator must create an Umbraco user account (use the same username) first before an Active Directory user can login.
