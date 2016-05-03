@@ -13,6 +13,9 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
 
 ## Usage instructions
 ### Getting started
+1. Before making any configuration file changes, make sure that you have an Administrator-level user account in Umbraco with the same username as the Active Directory account that you will use to login to Umbraco. It doesn't matter what you set for the password once UmbBackofficeMembershipProvider is enabled as it will check against Active Directory and not Umbraco for the password.
+
+### Installing UmbBackofficeMembershipProvider
 1. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
 2. Add the dependency [**UmbracoIdentityExtensions**](https://github.com/umbraco/UmbracoIdentityExtensions) as a reference in your project or place its DLL in the **\bin** folder.
 3. In **web.config**, make the following modifications:
@@ -51,6 +54,10 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
       </providers>
      </membership>
  ```
+ 4. In **config\UmbracoSettings.config**:
+   - If you are using the default `Umbraco.Web.Security.Providers.UsersMembershipProvider` class for `UsersMembershipProvider`, you don't need to do anything.
 
 ### User accounts
-In versions of Umbraco before 7.3.0, Umbraco automatically creates Umbraco user accounts for Active Directory users on first login. In versions 7.3.0 and newer, an administrator must create an Umbraco user account (use the same username) first before an Active Directory user can login.
+In versions of Umbraco before 7.3.0, Umbraco automatically creates Umbraco user accounts for Active Directory users on first login. In versions 7.3.0 and newer, an administrator must create an Umbraco user account (use the same username) first before an Active Directory user can login. Be careful that you've created an Administrator-level account with the same username as your Active Directory account before enabling UmbBackofficeMembershipProvider.
+
+It does not matter what password you use for local Umbraco accounts. Umbraco will authenticate against Active Directory rather than checking the locally stored passwords.
