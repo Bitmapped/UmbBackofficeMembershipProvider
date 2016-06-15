@@ -38,7 +38,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
       <providers>
         <add
            name="BackofficeMembershipProvider"
-           type="System.Web.Security.ActiveDirectoryMembershipProvider, System.Web, Version=2.0.0.0, 
+           type="System.Web.Security.ActiveDirectoryMembershipProvider, System.Web, Version=4.0.0.0, 
                  Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
            connectionStringName="ADConnectionString"
            attributeMapUsername="sAMAccountName"
