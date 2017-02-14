@@ -17,7 +17,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
 
 ### Installing UmbBackofficeMembershipProvider
 1. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
-2. Add the dependency [**UmbracoIdentityExtensions**](https://github.com/umbraco/UmbracoIdentityExtensions) as a reference in your project or place its DLL in the **\bin** folder.
+2. Add the dependency [**UmbracoIdentityExtensions**](https://github.com/umbraco/UmbracoIdentityExtensions) as a reference in your project or place its DLL in the **\bin** folder. If you install it via NuGet, remove the three files (**UmbracoAuthTokenServerExtensions.cs**, **UmbracoCustomOwinStartup.cs**, and **UmbracoStandardOwinStartup.cs**) created in the **\App_Start** folder.
 3. In **web.config**, make the following modifications:
   - Add or modify the following line in the `<appSettings>` section:
 
