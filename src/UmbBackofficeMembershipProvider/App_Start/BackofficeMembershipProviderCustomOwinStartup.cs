@@ -5,6 +5,7 @@ using Umbraco.Core.Security;
 using Umbraco.Web.Security.Identity;
 using UmbBackofficeMembershipProvider;
 using Umbraco.Core.Models.Identity;
+using Umbraco.Web;
 
 //To use this startup class, change the appSetting value in the web.config called 
 // "owin:appStartup" to be "BackofficeMembershipProviderCustomOwinStartup"
@@ -21,21 +22,25 @@ namespace UmbBackofficeMembershipProvider
     /// 
     /// This startup class would allow you to customize the Identity IUserStore and/or IUserManager for the Umbraco Backoffice
     /// </remarks>
-    public class BackofficeMembershipProviderCustomOwinStartup
+    public class BackofficeMembershipProviderCustomOwinStartup : UmbracoDefaultOwinStartup
     {
-        public void Configuration(IAppBuilder app)
+        /// <summary>
+        /// Configures services to be created in the OWIN context (CreatePerOwinContext)
+        /// </summary>
+        /// <param name="app"></param>
+        protected override void ConfigureServices(IAppBuilder app)
         {
-            //Configure the Identity user manager for use with Umbraco Back office
+            app.SetUmbracoLoggerFactory();
 
-            var applicationContext = ApplicationContext.Current;
+            // Configure password checker.
             app.ConfigureUserManagerForUmbracoBackOffice<BackOfficeUserManager, BackOfficeIdentityUser>(
-                applicationContext,
+                ApplicationContext,
                 (options, context) =>
                 {
                     var membershipProvider = MembershipProviderExtensions.GetUsersMembershipProvider().AsUmbracoMembershipProvider();
                     var userManager = BackOfficeUserManager.Create(options,
-                        applicationContext.Services.UserService,
-                        applicationContext.Services.ExternalLoginService,
+                        ApplicationContext.Services.UserService,
+                        ApplicationContext.Services.ExternalLoginService,
                         membershipProvider);
 
                     // Call custom passowrd checker.
@@ -43,11 +48,6 @@ namespace UmbBackofficeMembershipProvider
 
                     return userManager;
                 });
-
-            //Ensure owin is configured for Umbraco back office authentication
-            app
-                .UseUmbracoBackOfficeCookieAuthentication(ApplicationContext.Current)
-                .UseUmbracoBackOfficeExternalCookieAuthentication(ApplicationContext.Current);
         }
     }
 }
