@@ -17,7 +17,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
 
 ### Installing UmbBackofficeMembershipProvider
 1. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
-3. In **web.config**, make the following modifications:
+2. In **web.config**, make the following modifications:
   - Add or modify the following line in the `<appSettings>` section:
 
     ```
@@ -52,8 +52,9 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
           passwordFormat="Hashed" />
       </providers>
      </membership>
- ```
- 4. In **config\UmbracoSettings.config**:
+   ```
+
+3. In **config\UmbracoSettings.config**:
    - If you are using the default `Umbraco.Web.Security.Providers.UsersMembershipProvider` class for `UsersMembershipProvider`, you don't need to do anything.
 
 ### User accounts
