@@ -16,8 +16,8 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
 1. Before making any configuration file changes, make sure that you have an Administrator-level user account in Umbraco with the same username as the Active Directory account that you will use to login to Umbraco. It doesn't matter what you set for the password once UmbBackofficeMembershipProvider is enabled as it will check against Active Directory and not Umbraco for the password.
 
 ### Installing UmbBackofficeMembershipProvider
-1. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
-2. In **web.config**, make the following modifications:
+2. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
+3. In **web.config**, make the following modifications:
   - Add or modify the following line in the `<appSettings>` section:
 
     ```
@@ -32,7 +32,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
   
   - If you are upgrading from a pre-7.3.1 version of Umbraco that used an Active Directory provider for backoffice users, you must change `UsersMembershipProvider` to `Umbraco.Web.Security.Providers.UsersMembershipProvider`. If you have a new installation, this is the default provider already.  
   
-    ```
+```
     <membership defaultProvider="UmbracoMembershipProvider">
       <providers>
         <add
@@ -52,9 +52,9 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
           passwordFormat="Hashed" />
       </providers>
      </membership>
-   ```
+```
 
-3. In **config\UmbracoSettings.config**:
+4. In **config\UmbracoSettings.config**:
    - If you are using the default `Umbraco.Web.Security.Providers.UsersMembershipProvider` class for `UsersMembershipProvider`, you don't need to do anything.
 
 ### User accounts
