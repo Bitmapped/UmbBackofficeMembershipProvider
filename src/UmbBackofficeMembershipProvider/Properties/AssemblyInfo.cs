@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("UmbBackofficeMembershipProvider")]
-[assembly: AssemblyDescription("Code to allow Umbraco 7.4.2+ to use MembershipProvider-based providers for Active Directory authentication.")]
+[assembly: AssemblyDescription("Code to allow Umbraco 7.7.0+ to use MembershipProvider-based providers for Active Directory authentication.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Brian M. Powell")]
 [assembly: AssemblyProduct("UmbBackofficeMembershipProvider")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.0.0")]
+[assembly: AssemblyVersion("4.0.0.0")]
+[assembly: AssemblyFileVersion("4.0.0.0")]

@@ -40,10 +40,11 @@ namespace UmbBackofficeMembershipProvider
                     var membershipProvider = MembershipProviderExtensions.GetUsersMembershipProvider().AsUmbracoMembershipProvider();
                     var userManager = BackOfficeUserManager.Create(options,
                         ApplicationContext.Services.UserService,
+                        ApplicationContext.Services.EntityService,
                         ApplicationContext.Services.ExternalLoginService,
                         membershipProvider);
 
-                    // Call custom passowrd checker.
+                    // Call custom password checker.
                     userManager.BackOfficeUserPasswordChecker = new BackofficeMembershipProviderPasswordChecker();
 
                     return userManager;

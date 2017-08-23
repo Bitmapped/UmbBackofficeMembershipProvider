@@ -1,12 +1,14 @@
 # UmbBackofficeMembershipProvider
-Code to allow Umbraco 7.4.2+ to use MembershipProvider-based providers for Active Directory authentication.
+Code to allow Umbraco 7.7.0+ to use MembershipProvider-based providers for Active Directory authentication.
+
+Users of Umbraco 7.4.2-7.6.x should use UmbBackofficeMembershipProvider 3.0.0. Umbraco 7.7.0 includes a breaking change in its API. UmbBackofficeMembershipProvider 4.0.0 is not compatible with Umbraco versions older than v7.7.0.
 
 ## What's inside
 This project includes a DLL that will allow you to use a traditional `MembershipProvider` for logging in Umbraco backoffice users.
 
 ## System requirements
 1. NET Framework 4.5
-2. Umbraco 7.4.2+
+2. Umbraco 7.7.0+
 
 # NuGet availability
 This project is available on [NuGet](https://www.nuget.org/packages/UmbBackofficeMembershipProvider/).
