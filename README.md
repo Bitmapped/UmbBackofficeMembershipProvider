@@ -1,14 +1,14 @@
 # UmbBackofficeMembershipProvider
-Code to allow Umbraco 7.7.0+ to use MembershipProvider-based providers for Active Directory authentication.
+Code to allow Umbraco 7.7.0 Beta or newer to use MembershipProvider-based providers for Active Directory authentication.
 
-Users of Umbraco 7.4.2-7.6.x should use UmbBackofficeMembershipProvider 3.0.0. Umbraco 7.7.0 includes a breaking change in its API. UmbBackofficeMembershipProvider 4.0.0 is not compatible with Umbraco versions older than v7.7.0.
+Users of Umbraco 7.4.2-7.6.x should use UmbBackofficeMembershipProvider 3.0.0 ([NuGet](https://www.nuget.org/packages/UmbBackofficeMembershipProvider/3.0.0)). Umbraco 7.7.0 includes a breaking change in its API. UmbBackofficeMembershipProvider 4.0.0 is not compatible with Umbraco versions older than v7.7.0.
 
 ## What's inside
 This project includes a DLL that will allow you to use a traditional `MembershipProvider` for logging in Umbraco backoffice users.
 
 ## System requirements
 1. NET Framework 4.5
-2. Umbraco 7.7.0+
+2. Umbraco 7.7.0 Beta or newer
 
 # NuGet availability
 This project is available on [NuGet](https://www.nuget.org/packages/UmbBackofficeMembershipProvider/).
@@ -30,7 +30,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
     ```
     <add connectionString="LDAP://mydomain.mycompany.com/DC=mydomain,DC=mycompany,DC=com" name="ADConnectionString" />
     ```
-  - Add a membership provider named `BackofficeMembershipProvider`, like shown in the example code below. Be sure the `connectionStringName` matches the LDAP connection string you defined. `attributeMapUsername` specifies the username format - `sAMAccountName` for just the username, or `userPrincipalName` to use username@mydomain.mycompany.com. Be sure the usernames you configure in Umbraco use the same format.
+  - Add a membership provider named `BackofficeMembershipProvider`, like shown in the example code below. Be sure the `connectionStringName` matches the LDAP connection string you defined. `attributeMapUsername` specifies the username format - `sAMAccountName` for just the username, or `userPrincipalName` to use username@mydomain.mycompany.com. Be sure the usernames you configure in Umbraco use the same format. Clean Umbraco 7.7.0 Beta or newer installations will need to use the `userPrincipalName` format; existing installations upgraded to Umbraco 7.7.0 Beta or newer can use whichever format is preferred but the account usernames must be set consistently.
   
   - If you are upgrading from a pre-7.3.1 version of Umbraco that used an Active Directory provider for backoffice users, you must change `UsersMembershipProvider` to `Umbraco.Web.Security.Providers.UsersMembershipProvider`. If you have a new installation, this is the default provider already.  
   
