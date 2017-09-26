@@ -6,6 +6,7 @@ using Umbraco.Web.Security.Identity;
 using UmbBackofficeMembershipProvider;
 using Umbraco.Core.Models.Identity;
 using Umbraco.Web;
+using Umbraco.Core.Configuration;
 
 //To use this startup class, change the appSetting value in the web.config called 
 // "owin:appStartup" to be "BackofficeMembershipProviderCustomOwinStartup"
@@ -37,8 +38,10 @@ namespace UmbBackofficeMembershipProvider
                     var membershipProvider = MembershipProviderExtensions.GetUsersMembershipProvider().AsUmbracoMembershipProvider();
                     var userManager = BackOfficeUserManager.Create(options,
                         ApplicationContext.Services.UserService,
+                        ApplicationContext.Services.EntityService,
                         ApplicationContext.Services.ExternalLoginService,
-                        membershipProvider);
+                        membershipProvider,
+                        UmbracoConfig.For.UmbracoSettings().Content);
 
                     // Configure custom password checker.
                     userManager.BackOfficeUserPasswordChecker = new BackofficeMembershipProviderPasswordChecker();
