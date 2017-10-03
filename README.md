@@ -29,6 +29,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
     <add connectionString="LDAP://mydomain.mycompany.com/DC=mydomain,DC=mycompany,DC=com" name="ADConnectionString" />
     ```
    - Add a membership provider named `BackofficeMembershipProvider`, like shown in the example code below. Be sure the `connectionStringName` matches the LDAP connection string you defined. `attributeMapUsername` specifies the username format - `sAMAccountName` for just the username, or `userPrincipalName` to use username@mydomain.mycompany.com. Be sure the usernames you configure in Umbraco use the same format.
+
   
    - If you are upgrading from a pre-7.3.1 version of Umbraco that used an Active Directory provider for backoffice users, you must change `UsersMembershipProvider` to `Umbraco.Web.Security.Providers.UsersMembershipProvider`. If you have a new installation, this is the default provider already.  
   
