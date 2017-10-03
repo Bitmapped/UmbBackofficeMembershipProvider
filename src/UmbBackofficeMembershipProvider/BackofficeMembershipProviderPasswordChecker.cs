@@ -21,6 +21,33 @@ namespace UmbBackofficeMembershipProvider
         private BackOfficeUserManager<BackOfficeIdentityUser> _userManager;
 
         /// <summary>
+        /// Get culture to use in creating new accounts.
+        /// </summary>
+        public virtual string AccountCulture
+        {
+            get
+            {
+                // Get role from config file if specified. Otherwise, default to editor.
+                var configCulture = ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountCulture"];
+                configCulture = String.IsNullOrWhiteSpace(configCulture) ? GlobalSettings.DefaultUILanguage : configCulture;
+
+                return configCulture;
+            }
+        }
+
+        /// <summary>
+        /// E-mail domain name suffix for newly created accounts, if needed.
+        /// </summary>
+        public virtual string AccountEmailDomain
+        {
+            get
+            {
+                // Return domain from configuration settings or current hostname if not specified.
+                return ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountEmailDomain"] ?? ConfigurationManager.AppSettings["ActiveDirectoryDomain"] ?? HttpContext.Current.Request.Url.Host;
+            }
+        }
+
+        /// <summary>
         /// Role for new accounts.
         /// </summary>
         public virtual string[] AccountRoles
@@ -33,6 +60,20 @@ namespace UmbBackofficeMembershipProvider
 
                 // Split roles. Trim unnecessary commas and whitespace.
                 return configRoles.Trim(',').Split(',').Select(role => role.Trim()).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Determine if accounts should be created if missing.
+        /// </summary>
+        public virtual bool CreateAccounts
+        {
+            get
+            {
+                bool createAccounts = false;
+                Boolean.TryParse(ConfigurationManager.AppSettings["BackOfficeMembershipProvider:CreateAccounts"], out createAccounts);
+
+                return createAccounts;
             }
         }
 
@@ -52,47 +93,6 @@ namespace UmbBackofficeMembershipProvider
         protected IOwinContext OwinContext
         {
             get { return HttpContext.Current.GetOwinContext(); }
-        }
-
-        /// <summary>
-        /// E-mail domain name suffix for newly created accounts, if needed.
-        /// </summary>
-        public virtual string AccountEmailDomain
-        {
-            get
-            {
-                // Return domain from configuration settings or current hostname if not specified.
-                return ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountEmailDomain"] ?? ConfigurationManager.AppSettings["ActiveDirectoryDomain"] ?? HttpContext.Current.Request.Url.Host;
-            }
-        }
-
-        /// <summary>
-        /// Get culture to use in creating new accounts.
-        /// </summary>
-        public virtual string AccountCulture
-        {
-            get
-            {
-                // Get role from config file if specified. Otherwise, default to editor.
-                var configCulture = ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountCulture"];
-                configCulture = String.IsNullOrWhiteSpace(configCulture) ? GlobalSettings.DefaultUILanguage : configCulture;
-
-                return configCulture;
-            }
-        }
-
-        /// <summary>
-        /// Determine if accounts should be created if missing.
-        /// </summary>
-        public virtual bool CreateAccounts
-        {
-            get
-            {
-                bool createAccounts = false;
-                Boolean.TryParse(ConfigurationManager.AppSettings["BackOfficeMembershipProvider:CreateAccounts"], out createAccounts);
-
-                return createAccounts;
-            }
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace UmbBackofficeMembershipProvider
             if (validPassword && !user.HasIdentity && CreateAccounts)
             {
                 // Create user.
-                var userResult = await CreateUserForLogin(user);                
+                var userResult = await CreateUserForLogin(user);
             }
 
             return validPassword ? BackOfficeUserPasswordCheckerResult.ValidCredentials : BackOfficeUserPasswordCheckerResult.InvalidCredentials;
