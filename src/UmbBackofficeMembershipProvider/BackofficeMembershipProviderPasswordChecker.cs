@@ -86,31 +86,23 @@ namespace UmbBackofficeMembershipProvider
             if (adUser != null)
             {
                 var adEmail = adUser.Email ?? user.UserName;
-                var email = adEmail.Contains("@") ? adEmail : String.Format("{0}@{1}", adEmail, AccountEmailDomain);
+                email = adEmail.Contains("@") ? adEmail : String.Format("{0}@{1}", adEmail, AccountEmailDomain);
 
+                // Create new user identity.
                 var newUser = BackOfficeIdentityUser.CreateNew(user.UserName, email, AccountCulture);
-
-                // Set name. Username already set.
-                user.Name = adUser.UserName;
-
-                // Specify e-mail address, appending domain name suffix if needed.
-                var adEmail = adUser.Email ?? user.UserName;
-                var email = adEmail.Contains("@") ? adEmail : String.Format("{0}@{1}", adEmail, AccountEmailDomain);
-
-                // Set user culture
-                user.Culture = GlobalSettings.DefaultUILanguage;                
+                
+                // Add user to role.
+                if (!String.IsNullOrWhiteSpace(AccountRole))
+                {
+                    throw new Exception("Check roles");
+                    //newUser.AddRole(AccountRole);
+                }
 
                 // Attempt to create user.
                 var userManager = HttpContext.Current.GetOwinContext().GetBackOfficeUserManager();
                 if (userManager != null)
                 {
-                    var createUserTask = userManager.CreateAsync(user);
-
-                    // Assign role to newly persisted user.
-                    if (createUserTask.Result.Succeeded && !String.IsNullOrWhiteSpace(AccountRole))
-                    {
-                        user.AddRole(AccountRole);
-                    }
+                    var createUserTask = userManager.CreateAsync(newUser);
 
                     return createUserTask.Result;
                 }
@@ -137,7 +129,7 @@ namespace UmbBackofficeMembershipProvider
             if (validPassword && !user.HasIdentity && CreateAccounts)
             {
                 // Create user.
-                var userResult = CreateUser(user);
+                var userResult = CreateUser(user, null, null);
 
                 if (userResult.Succeeded)
                 {
