@@ -20,7 +20,7 @@ namespace UmbBackofficeMembershipProvider
         public virtual string AccountRole
         {
             get
-            {                
+            {
                 return ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountRole"];
             }
         }
@@ -85,30 +85,30 @@ namespace UmbBackofficeMembershipProvider
             var adUser = MembershipProvider.GetUser(user.UserName, false);
             if (adUser != null)
             {
+                // Determine e-mail address for user.
                 var adEmail = adUser.Email ?? user.UserName;
-                email = adEmail.Contains("@") ? adEmail : String.Format("{0}@{1}", adEmail, AccountEmailDomain);
+                user.Email = adEmail.Contains("@") ? adEmail : String.Format("{0}@{1}", adEmail, AccountEmailDomain);
 
-                // Create new user identity.
-                var newUser = BackOfficeIdentityUser.CreateNew(user.UserName, email, AccountCulture);
-                
+                // Assign username as name for user.
+                user.Name = user.UserName;
+
                 // Add user to role.
                 if (!String.IsNullOrWhiteSpace(AccountRole))
                 {
-                    throw new Exception("Check roles");
-                    //newUser.AddRole(AccountRole);
+                    user.AddRole(AccountRole);
                 }
 
                 // Attempt to create user.
                 var userManager = HttpContext.Current.GetOwinContext().GetBackOfficeUserManager();
-                if (userManager != null)
+                if (userManager == null)
                 {
-                    var createUserTask = userManager.CreateAsync(newUser);
-
-                    return createUserTask.Result;
+                    // COuld not access BackOfficeUserManager.
+                    return IdentityResult.Failed("Could not access BackOfficeUserManager.");
                 }
 
-                // Return that attempt failed.
-                return IdentityResult.Failed("Could not access BackOfficeUserManager.");
+                var createUserTask = userManager.CreateAsync(user);
+
+                return createUserTask.Result;
             }
 
             return IdentityResult.Failed("Could not load user from Active Directory.");
@@ -121,7 +121,7 @@ namespace UmbBackofficeMembershipProvider
         /// <param name="password">Password to test.</param>
         /// <returns>Object showing if user credentials are valid or not.</returns>
         public Task<BackOfficeUserPasswordCheckerResult> CheckPasswordAsync(BackOfficeIdentityUser user, string password)
-        {  
+        {
             // Check the password against Active Directory.
             var validPassword = MembershipProvider.ValidateUser(user.UserName, password);
 
@@ -129,7 +129,7 @@ namespace UmbBackofficeMembershipProvider
             if (validPassword && !user.HasIdentity && CreateAccounts)
             {
                 // Create user.
-                var userResult = CreateUser(user, null, null);
+                var userResult = CreateUser(user, null, AccountCulture);
 
                 if (userResult.Succeeded)
                 {
