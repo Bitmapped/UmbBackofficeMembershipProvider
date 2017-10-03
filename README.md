@@ -1,12 +1,12 @@
 # UmbBackofficeMembershipProvider
-Code to allow Umbraco 7.4.2+ to use MembershipProvider-based providers for Active Directory authentication.
+Code to allow Umbraco 7.7.2+ to use MembershipProvider-based providers for Active Directory authentication.
 
 ## What's inside
 This project includes a DLL that will allow you to use a traditional `MembershipProvider` for logging in Umbraco backoffice users.
 
 ## System requirements
 1. NET Framework 4.5
-2. Umbraco 7.4.2+
+2. Umbraco 7.7.2+
 
 # NuGet availability
 This project is available on [NuGet](https://www.nuget.org/packages/UmbBackofficeMembershipProvider/).
@@ -18,19 +18,19 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
 ### Installing UmbBackofficeMembershipProvider
 2. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
 3. In **web.config**, make the following modifications:
-  - Add or modify the following line in the `<appSettings>` section:
+   - Add or modify the following line in the `<appSettings>` section:
 
     ```
     <add key="owin:appStartup" value="BackofficeMembershipProviderCustomOwinStartup" />
     ```
-  - Add a LDAP connection string to your LDAP server in the `<connectionStrings>` section, like shown in the example code below. Specify a path to the domain root or a container/OU if you want to limit where the user accounts can be located.
+   - Add a LDAP connection string to your LDAP server in the `<connectionStrings>` section, like shown in the example code below. Specify a path to the domain root or a container/OU if you want to limit where the user accounts can be located.
   
     ```
     <add connectionString="LDAP://mydomain.mycompany.com/DC=mydomain,DC=mycompany,DC=com" name="ADConnectionString" />
     ```
-  - Add a membership provider named `BackofficeMembershipProvider`, like shown in the example code below. Be sure the `connectionStringName` matches the LDAP connection string you defined. `attributeMapUsername` specifies the username format - `sAMAccountName` for just the username, or `userPrincipalName` to use username@mydomain.mycompany.com. Be sure the usernames you configure in Umbraco use the same format.
+   - Add a membership provider named `BackofficeMembershipProvider`, like shown in the example code below. Be sure the `connectionStringName` matches the LDAP connection string you defined. `attributeMapUsername` specifies the username format - `sAMAccountName` for just the username, or `userPrincipalName` to use username@mydomain.mycompany.com. Be sure the usernames you configure in Umbraco use the same format.
   
-  - If you are upgrading from a pre-7.3.1 version of Umbraco that used an Active Directory provider for backoffice users, you must change `UsersMembershipProvider` to `Umbraco.Web.Security.Providers.UsersMembershipProvider`. If you have a new installation, this is the default provider already.  
+   - If you are upgrading from a pre-7.3.1 version of Umbraco that used an Active Directory provider for backoffice users, you must change `UsersMembershipProvider` to `Umbraco.Web.Security.Providers.UsersMembershipProvider`. If you have a new installation, this is the default provider already.  
   
 ```
     <membership defaultProvider="UmbracoMembershipProvider">
@@ -54,10 +54,16 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
      </membership>
 ```
 
+  
+
 4. In **config\UmbracoSettings.config**:
    - If you are using the default `Umbraco.Web.Security.Providers.UsersMembershipProvider` class for `UsersMembershipProvider`, you don't need to do anything.
 
-### User accounts
-In versions of Umbraco before 7.3.0, Umbraco automatically creates Umbraco user accounts for Active Directory users on first login. In versions 7.3.0 and newer, an administrator must create an Umbraco user account (use the same username) first before an Active Directory user can login. Be careful that you've created an Administrator-level account with the same username as your Active Directory account before enabling UmbBackofficeMembershipProvider.
+### Configure user account creation
+This version of UmbBackOfficeMembershipProvider can automatically create Umbraco backoffice user accounts for authenticated users. If you want to enable this functionality, follow these instructions:
 
-It does not matter what password you use for local Umbraco accounts. Umbraco will authenticate against Active Directory rather than checking the locally stored passwords.
+5. Insert the following `<appSettings>` keys in **web.config**:
+   - `<add key="BackOfficeMembershipProvider:CreateAccounts" value="true" />` - set to `true` to enable automatic account creation
+   - `<add key="BackOfficeMembershipProvider:AccountRoles" value="editor" />` - comma-separated list of groups user should be added to; defaults to **editor** if key is not present
+   - `<add key="BackOfficeMembershipProvider:AccountCulture" value="en-US" />` - culture/language to use in creating new account; defaults to value of `umbracoDefaultUILanguage` if not specified
+   - `<add key="BackOfficeMembershipProvider:AccountEmailDomain" value="mydomain.com" />` - specifies domain name to be used in setting *username@accountemaildomain* e-mail address for newly created accounts; ignored if username is already a valid e-mail address, hostname of website is used if key is not present otherwise
