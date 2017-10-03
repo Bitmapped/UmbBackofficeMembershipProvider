@@ -6,6 +6,7 @@ using Umbraco.Web.Security.Identity;
 using UmbBackofficeMembershipProvider;
 using Umbraco.Core.Models.Identity;
 using Umbraco.Web;
+using Umbraco.Core.Configuration;
 
 //To use this startup class, change the appSetting value in the web.config called 
 // "owin:appStartup" to be "BackofficeMembershipProviderCustomOwinStartup"
@@ -25,14 +26,11 @@ namespace UmbBackofficeMembershipProvider
     public class BackofficeMembershipProviderCustomOwinStartup : UmbracoDefaultOwinStartup
     {
         /// <summary>
-        /// Configures services to be created in the OWIN context (CreatePerOwinContext)
+        /// Configure user manager for use with Active Directory
         /// </summary>
         /// <param name="app"></param>
-        protected override void ConfigureServices(IAppBuilder app)
+        protected override void ConfigureUmbracoUserManager(IAppBuilder app)
         {
-            app.SetUmbracoLoggerFactory();
-
-            // Configure password checker.
             app.ConfigureUserManagerForUmbracoBackOffice<BackOfficeUserManager, BackOfficeIdentityUser>(
                 ApplicationContext,
                 (options, context) =>
@@ -42,9 +40,10 @@ namespace UmbBackofficeMembershipProvider
                         ApplicationContext.Services.UserService,
                         ApplicationContext.Services.EntityService,
                         ApplicationContext.Services.ExternalLoginService,
-                        membershipProvider);
+                        membershipProvider,
+                        UmbracoConfig.For.UmbracoSettings().Content);
 
-                    // Call custom password checker.
+                    // Configure custom password checker.
                     userManager.BackOfficeUserPasswordChecker = new BackofficeMembershipProviderPasswordChecker();
 
                     return userManager;
