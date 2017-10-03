@@ -65,5 +65,5 @@ This version of UmbBackOfficeMembershipProvider can automatically create Umbraco
 5. Insert the following `<appSettings>` keys in **web.config**:
    - `<add key="BackOfficeMembershipProvider:CreateAccounts" value="true" />` - set to `true` to enable automatic account creation
    - `<add key="BackOfficeMembershipProvider:AccountRoles" value="editor" />` - comma-separated list of groups user should be added to; defaults to **editor** if key is not present
-   - `<add key="BackOfficeMembershipProvider:AccountCulture" value="en-US" />` - culture/language to use in creating new account; defaults to value of `umbracoDefaultUILanguage` if not specified
-   - `<add key="BackOfficeMembershipProvider:AccountEmailDomain" value="mydomain.com" />` - specifies domain name to be used in setting *username@accountemaildomain* e-mail address for newly created accounts; ignored if username is already a valid e-mail address, hostname of website is used if key is not present otherwise
+   - `<add key="BackOfficeMembershipProvider:AccountCulture" value="en-US" />` - culture/language to use in creating new account; defaults to value of `umbracoDefaultUILanguage` if key is not present
+   - `<add key="BackOfficeMembershipProvider:AccountEmailDomain" value="mydomain.com" />` - specifies domain name to be used in setting *username@accountemaildomain* e-mail address for newly created accounts; ignored if username is already a valid e-mail address, hostname of website is used otherwise if key is not present
