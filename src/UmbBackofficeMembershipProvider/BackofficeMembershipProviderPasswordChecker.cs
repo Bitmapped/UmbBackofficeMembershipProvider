@@ -9,20 +9,49 @@ using umbraco;
 using Microsoft.AspNet.Identity;
 using Umbraco.Core.Logging;
 using Umbraco.Core;
+using Umbraco.Web.Security.Identity;
+using Umbraco.Core.Services;
+using Microsoft.Owin;
+using System.Linq;
 
 namespace UmbBackofficeMembershipProvider
 {
     public class BackofficeMembershipProviderPasswordChecker : IBackOfficeUserPasswordChecker
     {
+        private BackOfficeUserManager<BackOfficeIdentityUser> _userManager;
+
         /// <summary>
         /// Role for new accounts.
         /// </summary>
-        public virtual string AccountRole
+        public virtual string[] AccountRoles
         {
             get
             {
-                return ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountRole"];
+                // Get role from config file if specified. Otherwise, default to editor.
+                var configRoles = ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountRoles"];
+                configRoles = String.IsNullOrWhiteSpace(configRoles) ? "editor" : configRoles;
+
+                // Split roles. Trim unnecessary commas and whitespace.
+                return configRoles.Trim(',').Split(',').Select(role => role.Trim()).ToArray();
             }
+        }
+
+        /// <summary>
+        /// Returns a ServiceContext
+        /// </summary>
+        public ServiceContext Services
+        {
+            get { return ApplicationContext.Current.Services; }
+        }
+
+        protected BackOfficeUserManager<BackOfficeIdentityUser> UserManager
+        {
+            get { return _userManager ?? (_userManager = OwinContext.GetBackOfficeUserManager()); }
+        }
+
+        protected IOwinContext OwinContext
+        {
+            get { return HttpContext.Current.GetOwinContext(); }
         }
 
         /// <summary>
@@ -44,7 +73,11 @@ namespace UmbBackofficeMembershipProvider
         {
             get
             {
-                return GlobalSettings.DefaultUILanguage;
+                // Get role from config file if specified. Otherwise, default to editor.
+                var configCulture = ConfigurationManager.AppSettings["BackOfficeMembershipProvider:AccountCulture"];
+                configCulture = String.IsNullOrWhiteSpace(configCulture) ? GlobalSettings.DefaultUILanguage : configCulture;
+
+                return configCulture;
             }
         }
 
@@ -55,7 +88,7 @@ namespace UmbBackofficeMembershipProvider
         {
             get
             {
-                bool createAccounts;
+                bool createAccounts = false;
                 Boolean.TryParse(ConfigurationManager.AppSettings["BackOfficeMembershipProvider:CreateAccounts"], out createAccounts);
 
                 return createAccounts;
@@ -79,7 +112,46 @@ namespace UmbBackofficeMembershipProvider
             }
         }
 
-        protected virtual IdentityResult CreateUser(BackOfficeIdentityUser user, string email, string culture)
+        /// <summary>
+        /// Create a new user account.
+        /// </summary>
+        /// <param name="user">Back office user account</param>
+        /// <param name="userGroups">Groups to assign to user</param>
+        /// <param name="culture">Culture for user</param>
+        /// <param name="email">Email address for user account</param>
+        /// <param name="name">Name for user account</param>
+        /// <returns></returns>
+        protected async virtual Task<IdentityResult> NewCreateUser(BackOfficeIdentityUser user, string[] userGroups, string culture, string email = null, string name = null)
+        {
+            // Mandate that parameters must be specified.
+            Mandate.ParameterNotNull<BackOfficeIdentityUser>(user, "user");
+            Mandate.ParameterNotNullOrEmpty<string>(userGroups, "userGroups");
+            Mandate.ParameterNotNull<string>(culture, "culture");
+
+            // Assign name to user if not already specified. Use name if specified, otherwise use email address.
+            user.Name = user.Name ?? name ?? user.UserName;
+
+            // Assign email to user if not already specified.
+            user.Email = user.Email ?? email;
+            if (String.IsNullOrWhiteSpace(user.Email))
+            {
+                throw new ArgumentNullException("email");
+            }
+
+            // Assign user to specified groups.
+            var groups = Services.UserService.GetUserGroupsByAlias(userGroups);
+            foreach (var userGroup in groups)
+            {
+                user.AddRole(userGroup.Alias);
+            }
+
+            // Create user account.
+            var userCreationResults = await UserManager.CreateAsync(user);
+
+            return userCreationResults;
+        }
+
+        protected virtual async Task<IdentityResult> CreateUserForLogin(BackOfficeIdentityUser user)
         {
             // Get information for the user from Active Directory.
             var adUser = MembershipProvider.GetUser(user.UserName, false);
@@ -87,28 +159,30 @@ namespace UmbBackofficeMembershipProvider
             {
                 // Determine e-mail address for user.
                 var adEmail = adUser.Email ?? user.UserName;
-                user.Email = adEmail.Contains("@") ? adEmail : String.Format("{0}@{1}", adEmail, AccountEmailDomain);
+                var email = adEmail.Contains("@") ? adEmail : String.Format("{0}@{1}", adEmail, AccountEmailDomain);
 
                 // Assign username as name for user.
-                user.Name = user.UserName;
+                var name = user.UserName;
 
-                // Add user to role.
-                if (!String.IsNullOrWhiteSpace(AccountRole))
+                // Assign roles for user.
+                var roles = AccountRoles;
+
+                // Assign culture for user.
+                var culture = AccountCulture;
+
+                // Create user.
+                var createUserTask = await NewCreateUser(user, roles, culture, email, name);
+
+                if (createUserTask.Succeeded)
                 {
-                    user.AddRole(AccountRole);
+                    LogHelper.Info(typeof(BackofficeMembershipProviderPasswordChecker), String.Format("Created user account {0}.", user.UserName));
+                }
+                else
+                {
+                    LogHelper.Warn(typeof(BackofficeMembershipProviderPasswordChecker), String.Format("Failed to create user account {0} with error: {1}.", createUserTask.Errors.ToString()));
                 }
 
-                // Attempt to create user.
-                var userManager = HttpContext.Current.GetOwinContext().GetBackOfficeUserManager();
-                if (userManager == null)
-                {
-                    // COuld not access BackOfficeUserManager.
-                    return IdentityResult.Failed("Could not access BackOfficeUserManager.");
-                }
-
-                var createUserTask = userManager.CreateAsync(user);
-
-                return createUserTask.Result;
+                return createUserTask;
             }
 
             return IdentityResult.Failed("Could not load user from Active Directory.");
@@ -120,7 +194,7 @@ namespace UmbBackofficeMembershipProvider
         /// <param name="user">User to test.</param>
         /// <param name="password">Password to test.</param>
         /// <returns>Object showing if user credentials are valid or not.</returns>
-        public Task<BackOfficeUserPasswordCheckerResult> CheckPasswordAsync(BackOfficeIdentityUser user, string password)
+        public async Task<BackOfficeUserPasswordCheckerResult> CheckPasswordAsync(BackOfficeIdentityUser user, string password)
         {
             // Check the password against Active Directory.
             var validPassword = MembershipProvider.ValidateUser(user.UserName, password);
@@ -129,19 +203,10 @@ namespace UmbBackofficeMembershipProvider
             if (validPassword && !user.HasIdentity && CreateAccounts)
             {
                 // Create user.
-                var userResult = CreateUser(user, null, AccountCulture);
-
-                if (userResult.Succeeded)
-                {
-                    LogHelper.Info(typeof(BackofficeMembershipProviderPasswordChecker), String.Format("Created user account {0} with role {1}.", user.UserName, this.AccountRole));
-                }
-                else
-                {
-                    LogHelper.Warn(typeof(BackofficeMembershipProviderPasswordChecker), String.Format("Failed to create user account {0} with error: {1}.", userResult.Errors.ToString()));
-                }
+                var userResult = await CreateUserForLogin(user);                
             }
 
-            return validPassword ? Task.FromResult(BackOfficeUserPasswordCheckerResult.ValidCredentials) : Task.FromResult(BackOfficeUserPasswordCheckerResult.InvalidCredentials);
+            return validPassword ? BackOfficeUserPasswordCheckerResult.ValidCredentials : BackOfficeUserPasswordCheckerResult.InvalidCredentials;
         }
     }
 }
