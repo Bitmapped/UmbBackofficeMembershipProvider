@@ -78,6 +78,20 @@ namespace UmbBackofficeMembershipProvider
         }
 
         /// <summary>
+        /// Determine if default Umbraco password checker should be used when user was not authenticated in Active Directory.
+        /// </summary>
+        public virtual bool FallbackToDefaultChecker
+        {
+            get
+            {
+                bool fallbackToDefaultChecker = false;
+                Boolean.TryParse(ConfigurationManager.AppSettings["BackOfficeMembershipProvider:FallbackToDefaultChecker"], out fallbackToDefaultChecker);
+
+                return fallbackToDefaultChecker;
+            }
+        }
+
+        /// <summary>
         /// Returns a ServiceContext
         /// </summary>
         public ServiceContext Services
@@ -206,7 +220,8 @@ namespace UmbBackofficeMembershipProvider
                 var userResult = await CreateUserForLogin(user);
             }
 
-            return validPassword ? BackOfficeUserPasswordCheckerResult.ValidCredentials : BackOfficeUserPasswordCheckerResult.InvalidCredentials;
+            return validPassword ? BackOfficeUserPasswordCheckerResult.ValidCredentials :
+                FallbackToDefaultChecker ? BackOfficeUserPasswordCheckerResult.FallbackToDefaultChecker : BackOfficeUserPasswordCheckerResult.InvalidCredentials;
         }
     }
 }
