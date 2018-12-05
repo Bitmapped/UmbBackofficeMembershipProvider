@@ -36,7 +36,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
    - If you are upgrading from a pre-7.3.1 version of Umbraco that used an Active Directory provider for backoffice users, you must change `UsersMembershipProvider` to `Umbraco.Web.Security.Providers.UsersMembershipProvider`. If you have a new installation, this is the default provider already.  
   
 ```
-    <membership defaultProvider="UmbracoMembershipProvider">
+    <membership defaultProvider="BackofficeMembershipProvider">
       <providers>
         <add
            name="BackofficeMembershipProvider"
