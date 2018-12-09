@@ -46,13 +46,15 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
            attributeMapUsername="sAMAccountName"
            connectionUsername="testdomain\administrator" 
            connectionPassword="password"/>
-        <add
-          name="UsersMembershipProvider"
-          type="Umbraco.Web.Security.Providers.UsersMembershipProvider, Umbraco"
-          minRequiredNonalphanumericCharacters="0" minRequiredPasswordLength="8"
-          useLegacyEncoding="true" enablePasswordRetrieval="false"
-          enablePasswordReset="true" requiresQuestionAndAnswer="false"
-          passwordFormat="Hashed" />
+        <!-- Existing providers appear below -->
+        <add name="UmbracoMembershipProvider"
+           type="Umbraco.Web.Security.Providers.MembersMembershipProvider, Umbraco"
+           minRequiredNonalphanumericCharacters="0" minRequiredPasswordLength="10"
+           useLegacyEncoding="false" enablePasswordRetrieval="false" enablePasswordReset="false"
+           requiresQuestionAndAnswer="false" defaultMemberTypeAlias="Member"
+           passwordFormat="Hashed" allowManuallyChangingPassword="false" />
+        <add name="UsersMembershipProvider"
+           type="Umbraco.Web.Security.Providers.UsersMembershipProvider, Umbraco" />
       </providers>
      </membership>
 ```
