@@ -15,7 +15,7 @@ This project is available on [NuGet](https://www.nuget.org/packages/UmbBackoffic
 
 ## Usage instructions
 ### Getting started
-1. Before making any configuration file changes, make sure that you have an Administrator-level user account in Umbraco with the same username as the Active Directory account that you will use to login to Umbraco. It doesn't matter what you set for the password once UmbBackofficeMembershipProvider is enabled as it will check against Active Directory and not Umbraco for the password.
+1. Before making any configuration file changes, make sure that you have an Administrator-level user account in Umbraco with the same username as the Active Directory account that you will use to login to Umbraco. It doesn't matter what you set for the password once UmbBackofficeMembershipProvider is enabled as it will check against Active Directory and not Umbraco for the password (unless you enable the fallback option below).
 
 ### Installing UmbBackofficeMembershipProvider
 2. Add **UmbBackofficeMembershipProvider.dll** as a reference in your project or place it in the **\bin** folder.
@@ -72,4 +72,8 @@ This version of UmbBackOfficeMembershipProvider can automatically create Umbraco
    - `<add key="BackOfficeMembershipProvider:AccountRoles" value="editor" />` - comma-separated list of groups user should be added to; defaults to **editor** if key is not present
    - `<add key="BackOfficeMembershipProvider:AccountCulture" value="en-US" />` - culture/language to use in creating new account; defaults to value of `umbracoDefaultUILanguage` if key is not present
    - `<add key="BackOfficeMembershipProvider:AccountEmailDomain" value="mydomain.com" />` - specifies domain name to be used in setting *username@accountemaildomain* e-mail address for newly created accounts; ignored if username is already a valid e-mail address, hostname of website is used otherwise if key is not present
-   - `<add key="BackOfficeMembershipProvider:FallbackToDefaultChecker" value="true" />` - set to `true` to enable fallback to default Umbraco authentication
+   
+### Configure fallback to internal login
+By default, if an attempt login does not authenticate successfully against Active Directory, it fails. If you wish to try logins that fail Active Directory authentication against Umbraco's local user database before failing them entirely, you can enable the fallback option.
+6. Insert the following `<appSettings>` key in **web.config**:
+   - `<add key="BackOfficeMembershipProvider:FallbackToDefaultChecker" value="true" />` - set to `true` to enable fallback to autehntication against Umbraco's local user database
