@@ -17,3 +17,4 @@ src/UmbBackofficeMembershipProvider/obj/Debug/TemporaryGeneratedFile_036C0B5B-14
 src/UmbBackofficeMembershipProvider/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
 /src/UmbBackofficeMembershipProvider/obj
 *.suo
+/src/.vs/UmbBackofficeMembershipProvider/v15/Server/sqlite3
