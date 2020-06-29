@@ -18,3 +18,4 @@ src/UmbBackofficeMembershipProvider/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F
 /src/UmbBackofficeMembershipProvider/obj
 *.suo
 /src/.vs/UmbBackofficeMembershipProvider/v15/Server/sqlite3
+/src/.vs/UmbBackofficeMembershipProvider/v16/Server/sqlite3
